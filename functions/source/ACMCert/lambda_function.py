@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import str
 import json
 import logging
 import boto3
@@ -52,7 +54,7 @@ def handler(event, context):
                         logging.error('timed out waiting for ResourceRecord')
                         status = cfnresponse.FAILED
                     time.sleep(15)
-            for r in rs.keys():
+            for r in list(rs.keys()):
                 change = [{'Action': 'CREATE', 'ResourceRecordSet': {'Name': r, 'Type': 'CNAME', 'TTL': 600, 'ResourceRecords': [{'Value': rs[r]}]}}]
                 try:
                     r53_client.change_resource_record_sets(HostedZoneId=event['ResourceProperties']['HostedZoneId'], ChangeBatch={'Changes': change})
@@ -90,7 +92,7 @@ def handler(event, context):
                 rs={}
                 for d in acm_client.describe_certificate(CertificateArn=physical_resource_id)['Certificate']['DomainValidationOptions']:
                     rs[d['ResourceRecord']['Name']] = d['ResourceRecord']['Value']
-                rs = [{'Action': 'DELETE', 'ResourceRecordSet': {'Name': r, 'Type': 'CNAME', 'TTL': 600,'ResourceRecords': [{'Value': rs[r]}]}} for r in rs.keys()]
+                rs = [{'Action': 'DELETE', 'ResourceRecordSet': {'Name': r, 'Type': 'CNAME', 'TTL': 600,'ResourceRecords': [{'Value': rs[r]}]}} for r in list(rs.keys())]
                 try:
                     r53_client.change_resource_record_sets(HostedZoneId=event['ResourceProperties']['HostedZoneId'], ChangeBatch={'Changes': rs})
                 except r53_client.exceptions.InvalidChangeBatch as e:

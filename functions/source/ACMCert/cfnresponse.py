@@ -1,3 +1,4 @@
+from __future__ import print_function
 #  Copyright 2016 Amazon Web Services, Inc. or its affiliates. All Rights Reserved.
 #  This file is licensed to you under the AWS Customer Agreement (the "License").
 #  You may not use this file except in compliance with the License.
@@ -5,6 +6,7 @@
 #  This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or implied.
 #  See the License for the specific language governing permissions and limitations under the License.
 
+from builtins import str
 from botocore.vendored import requests
 import json
 
@@ -14,7 +16,7 @@ FAILED = "FAILED"
 def send(event, context, responseStatus, responseData, physicalResourceId, reason=None):
     responseUrl = event['ResponseURL']
 
-    print responseUrl
+    print(responseUrl)
 
     responseBody = {}
     responseBody['Status'] = responseStatus
@@ -30,7 +32,7 @@ def send(event, context, responseStatus, responseData, physicalResourceId, reaso
 
     json_responseBody = json.dumps(responseBody)
    
-    print "Response body:\n" + json_responseBody
+    print("Response body:\n" + json_responseBody)
 
     headers = {
         'content-type' : '', 
@@ -41,6 +43,6 @@ def send(event, context, responseStatus, responseData, physicalResourceId, reaso
         response = requests.put(responseUrl,
                                 data=json_responseBody,
                                 headers=headers)
-        print "Status code: " + response.reason
+        print("Status code: " + response.reason)
     except Exception as e:
-        print "send(..) failed executing requests.put(..): " + str(e)
+        print("send(..) failed executing requests.put(..): " + str(e))
