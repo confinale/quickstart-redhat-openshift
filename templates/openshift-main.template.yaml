@@ -675,3 +675,9 @@ Outputs:
   OpenShiftUI:
     Description: The URL OpenShiftUI
     Value: !GetAtt OpenShift4.Outputs.OpenShiftUI
+  VPCTemplateUrl:
+    Description: VPC URL
+    Value:  !Sub
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/common/aws-vpc.template.yaml'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
