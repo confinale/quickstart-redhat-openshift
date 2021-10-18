@@ -465,6 +465,7 @@ Resources:
       HostedZoneName: !Ref HostedZoneName
       SSHKey: !Ref SSHKey
       WorkerNodeSize: !Ref NumberOfNodes
+      MachineNetwork: !Ref VPCCIDR
       AvailabilityZones: !Split
         - ","
         - !Ref AvailabilityZones

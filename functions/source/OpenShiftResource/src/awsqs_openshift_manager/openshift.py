@@ -19,7 +19,7 @@ MINIMUM_HEALTHY_OPERATORS = 25
 
 def generate_ignition_files(openshift_install_binary, download_path, cluster_name, ssh_key, pull_secret,
                             hosted_zone_name, subnets, availability_zones, aws_access_key_id, aws_secret_access_key,
-                            worker_node_size=3, certificate_arn=None, worker_instance_profile=None, ami_id=None):
+                            worker_node_size=3, certificate_arn=None, worker_instance_profile=None, ami_id=None, machine_network=None):
     """
     Produces a set of Ignition files and K8S/OpenShift manifests that are used to orchestrate the majority of the
     OpenShift v4 installation process.
@@ -82,6 +82,8 @@ def generate_ignition_files(openshift_install_binary, download_path, cluster_nam
     openshift_install_config['compute'][0]['platform']['aws']['zones'] = availability_zones
     openshift_install_config['compute'][0]['platform']['aws']['rootVolume']['type'] = 'gp3'
     openshift_install_config['compute'][0]['replicas'] = worker_node_size
+    if machine_network is not None:
+        openshift_install_config['networking']['machineNetwork'][0]['cidr'] = machine_network
 
     cluster_install_config_file = os.path.join(assets_directory, 'install-config.yaml')
     yaml.dump(openshift_install_config,
