@@ -86,7 +86,8 @@ def generate_ignition_files(openshift_install_binary, download_path, cluster_nam
     openshift_install_config['compute'][0]['replicas'] = worker_node_size
     if machine_network is not None:
         openshift_install_config['networking']['machineNetwork'][0]['cidr'] = machine_network
-
+    log.debug('full config file:')
+    log.debug(yaml.dump(openshift_install_config))
     cluster_install_config_file = os.path.join(assets_directory, 'install-config.yaml')
     yaml.dump(openshift_install_config,
               open(cluster_install_config_file, 'w'),
@@ -363,6 +364,8 @@ networking:
   networkType: OpenShiftSDN
   serviceNetwork:
   - 172.30.0.0/16
+  machineNetwork:
+  - cidr: 10.19.0.0/16
 platform:
   aws:
     region: updateme
