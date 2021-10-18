@@ -45,6 +45,7 @@ def generate_ignition_files(openshift_install_binary, download_path, cluster_nam
     :param aws_access_key_id: A valid AWS Access Key ID for the Cluster to use for managing the AWS platform
     :param aws_secret_access_key: A valid AWS Secret Access Key for the Cluster to use for managing the AWS platform
     :param worker_instance_profile: [Optional] A IAM Instance Profile to attach to Worker instances
+    :param machine_network: [Optional] The machine network cidr to use.
 
     :return Tuple(InfraName: str, KubeAdminPass: str, KubeConfig: str, AssetsDir: str):
     """
@@ -58,6 +59,7 @@ def generate_ignition_files(openshift_install_binary, download_path, cluster_nam
     log.debug('Cluster AWS Access Key: %s', aws_access_key_id)
     log.debug('Cluster AWS Secret Key is %s set', "" if aws_secret_access_key else "not")
     log.debug('Worker Instance Profile: %s', worker_instance_profile)
+    log.debug('Machine Network: %s', machine_network)
 
     if not os.path.exists(assets_directory):
         os.mkdir(assets_directory)
