@@ -80,12 +80,18 @@ def generate_ignition_files(openshift_install_binary, download_path, cluster_nam
     openshift_install_config['platform']['aws']['region'] = os.getenv('AWS_REGION')
     if ami_id is not None:
         openshift_install_config['platform']['aws']['amiID'] = ami_id
+    #TODO openshift_install_config['controlPlane'][0]['platform']['aws']['type'] = 
     openshift_install_config['controlPlane']['platform']['aws']['zones'] = availability_zones
     openshift_install_config['compute'][0]['platform']['aws']['zones'] = availability_zones
+    #TODO openshift_install_config['compute'][0]['platform']['aws']['type'] = 
+    #TODO make storage type configurable
+    # iops: 2000
+    # size: 500
     openshift_install_config['compute'][0]['platform']['aws']['rootVolume']['type'] = 'gp3'
     openshift_install_config['compute'][0]['replicas'] = worker_node_size
     if machine_network is not None:
         openshift_install_config['networking']['machineNetwork'][0]['cidr'] = machine_network
+    #TODO remove full dump
     log.debug('full config file:')
     log.debug(yaml.dump(openshift_install_config))
     cluster_install_config_file = os.path.join(assets_directory, 'install-config.yaml')
