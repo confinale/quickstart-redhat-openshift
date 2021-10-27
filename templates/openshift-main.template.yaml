@@ -408,6 +408,7 @@ Parameters:
     Default: ""
   ClusterName:
     AllowedPattern: ".+"
+    Default: "infra03"
     Description: "Required: cluster name is required for OCP 4.x"
     Type: String
 Resources:
