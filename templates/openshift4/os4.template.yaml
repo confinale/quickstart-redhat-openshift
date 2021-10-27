@@ -17,9 +17,6 @@ Metadata:
           - PrivateSubnet1ID
           - PrivateSubnet2ID
           - PrivateSubnet3ID
-          - PublicSubnet1ID
-          - PublicSubnet2ID
-          - PublicSubnet3ID
           - SSLCertificateId
           - ClusterIngressPrivateKeySecretName
           - ClusterIngressCertificateArn
@@ -101,12 +98,6 @@ Metadata:
         default: Private Subnet 2 ID
       PrivateSubnet1ID:
         default: Private Subnet 1 ID
-      PublicSubnet1ID:
-        default: Public Subnet 1 ID
-      PublicSubnet2ID:
-        default: Public Subnet 2 ID
-      PublicSubnet3ID:
-        default: Public Subnet 3 ID
       ClusterIngressPrivateKeySecretName:
         default: Cluster Ingress Private Key Secret Name
       ClusterIngressCertificateArn:
@@ -139,18 +130,6 @@ Parameters:
       subnet-b1f432cd)
     Type: String
   PrivateSubnet3ID:
-    Description: ID of private subnet 3 in Availability Zone 3 for the Workload (e.g.,
-      subnet-b1f4a2cd)
-    Type: String
-  PublicSubnet1ID:
-    Description: ID of private subnet 1 in Availability Zone 1 for the Workload (e.g.,
-      subnet-a0246dcd)
-    Type: String
-  PublicSubnet2ID:
-    Description: ID of private subnet 2 in Availability Zone 2 for the Workload (e.g.,
-      subnet-b1f432cd)
-    Type: String
-  PublicSubnet3ID:
     Description: ID of private subnet 3 in Availability Zone 3 for the Workload (e.g.,
       subnet-b1f4a2cd)
     Type: String
@@ -470,9 +449,6 @@ Resources:
         - ","
         - !Ref AvailabilityZones
       Subnets:
-        - !Ref PublicSubnet1ID
-        - !Ref PublicSubnet2ID
-        - !Ref PublicSubnet3ID
         - !Ref PrivateSubnet1ID
         - !Ref PrivateSubnet2ID
         - !Ref PrivateSubnet3ID
@@ -526,9 +502,6 @@ Resources:
         HostedZoneName: !Ref HostedZoneName
         HostedZoneID: !Ref HostedZoneID
         ACMCertificateId: !Ref SSLCertificateId
-        PublicSubnets: !Join
-          - ","
-          - [!Ref PublicSubnet1ID, !Ref PublicSubnet2ID, !Ref PublicSubnet3ID]
         PrivateSubnets: !Join
           - ","
           - [!Ref PrivateSubnet1ID, !Ref PrivateSubnet2ID, !Ref PrivateSubnet3ID]
@@ -580,7 +553,7 @@ Resources:
               - Value
           - !Ref AmiId
         AllowedBootstrapSshCidr: !Ref RemoteAccessCIDR
-        PublicSubnet: !Ref PublicSubnet1ID
+        Subnet: !Ref PrivateSubnet1ID
         BootstrapIgnitionLocation: !Sub s3://${IgnitionBucket}/${ClusterName}/bootstrap.ign
         VpcId: !Ref VPCID
         MasterSecurityGroupId: !GetAtt 'SecurityStack.Outputs.MasterSecurityGroupId'
