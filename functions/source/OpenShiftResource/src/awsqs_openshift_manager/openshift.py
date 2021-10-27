@@ -374,6 +374,7 @@ platform:
   aws:
     region: updateme
     subnets: []
+publish: Internal
 
 pullSecret: "{ 'UpdateMe': true }"
 sshKey: |
