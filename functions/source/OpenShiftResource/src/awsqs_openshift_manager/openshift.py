@@ -84,7 +84,9 @@ def generate_ignition_files(openshift_install_binary, download_path, cluster_nam
     openshift_install_config['controlPlane']['platform']['aws']['zones'] = availability_zones
     openshift_install_config['compute'][0]['platform']['aws']['zones'] = availability_zones
     #TODO openshift_install_config['compute'][0]['platform']['aws']['type'] = 
-    #TODO make storage type configurable for compute & control + iops & size
+    #TODO make storage type configurable
+    # iops: 2000
+    # size: 500
     openshift_install_config['compute'][0]['platform']['aws']['rootVolume']['type'] = 'gp3'
     openshift_install_config['compute'][0]['replicas'] = worker_node_size
     if machine_network is not None:
