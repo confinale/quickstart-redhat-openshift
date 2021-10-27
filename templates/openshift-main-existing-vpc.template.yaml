@@ -715,7 +715,7 @@ Mappings:
       OpenShiftClientBinary: "openshift-client"
     "4.6":
       OpenShiftMirrorURL:  "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/"
-      OpenShiftVersionNum: "4.6.8"
+      OpenShiftVersionNum: "4.6.49"
       OpenShiftInstallBinary: "openshift-install"
       OpenShiftClientBinary: "openshift-client"
 Outputs:
