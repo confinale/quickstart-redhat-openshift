@@ -17,6 +17,7 @@ Metadata:
           - PrivateSubnet1ID
           - PrivateSubnet2ID
           - PrivateSubnet3ID
+          - PublicSubnet1ID
           - SSLCertificateId
           - ClusterIngressPrivateKeySecretName
           - ClusterIngressCertificateArn
@@ -98,6 +99,8 @@ Metadata:
         default: Private Subnet 2 ID
       PrivateSubnet1ID:
         default: Private Subnet 1 ID
+      PublicSubnet1ID:
+        default: Public Subnet 1 ID
       ClusterIngressPrivateKeySecretName:
         default: Cluster Ingress Private Key Secret Name
       ClusterIngressCertificateArn:
@@ -132,6 +135,10 @@ Parameters:
   PrivateSubnet3ID:
     Description: ID of private subnet 3 in Availability Zone 3 for the Workload (e.g.,
       subnet-b1f4a2cd)
+    Type: String
+  PublicSubnet1ID:
+    Description: ID of private subnet 1 in Availability Zone 1 for the Workload (e.g.,
+      subnet-a0246dcd)
     Type: String
   NumberOfNodes:
     Default: '3'
@@ -553,6 +560,7 @@ Resources:
               - Value
           - !Ref AmiId
         AllowedBootstrapSshCidr: !Ref RemoteAccessCIDR
+        PublicSubnet: !Ref PublicSubnet1ID
         Subnet: !Ref PrivateSubnet1ID
         BootstrapIgnitionLocation: !Sub s3://${IgnitionBucket}/${ClusterName}/bootstrap.ign
         VpcId: !Ref VPCID

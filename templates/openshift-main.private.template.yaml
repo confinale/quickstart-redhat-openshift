@@ -586,6 +586,7 @@ Resources:
         PrivateSubnet1ID: !GetAtt 'VPCStack.Outputs.PrivateSubnet1AID'
         PrivateSubnet2ID: !GetAtt 'VPCStack.Outputs.PrivateSubnet2AID'
         PrivateSubnet3ID: !GetAtt 'VPCStack.Outputs.PrivateSubnet3AID'
+        PublicSubnet1ID: !GetAtt 'VPCStack.Outputs.PublicSubnet1AID'
         VPCID: !GetAtt 'VPCStack.Outputs.VPCID'
         SSLCertificateId: !If
           - UseCustomCertificate
