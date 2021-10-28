@@ -561,7 +561,6 @@ Resources:
           - !Ref AmiId
         AllowedBootstrapSshCidr: !Ref RemoteAccessCIDR
         PublicSubnet: !Ref PublicSubnet1ID
-        Subnet: !Ref PrivateSubnet1ID
         BootstrapIgnitionLocation: !Sub s3://${IgnitionBucket}/${ClusterName}/bootstrap.ign
         VpcId: !Ref VPCID
         MasterSecurityGroupId: !GetAtt 'SecurityStack.Outputs.MasterSecurityGroupId'
