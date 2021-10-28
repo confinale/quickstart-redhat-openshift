@@ -145,6 +145,25 @@ def bootstrap_create(model: ResourceModel, stage: str, start_time: float, sessio
         kubeconfig_path = write_kubeconfig(session, model.KubeConfig)
         #fetch_openshift_binary(openshift_client_mirror_url, openshift_client_package, openshift_client_binary, '/tmp/')
 
+
+    # ignore just wait a bit - you'll need to manually terminate the bootstrap instance..
+    if stage == "WAIT_FOR_INIT":
+            delay = 300
+            next_stage = 'WAIT_FOR_CLUSTER_OPERATORS'
+            return {**default_response, **{
+                "callbackContext": {"stage": next_stage, "start_time": start_time},
+                "callbackDelaySeconds": delay
+            }}
+    elif stage == "WAIT_FOR_CLUSTER_OPERATORS":
+        return {
+            "status": OperationStatus.SUCCESS,
+            "resourceModel": model,
+            "message": "Cluster successfully bootstrapped and ready for operations",
+        }
+
+    raise AttributeError("Unknown Stage: %s", stage)
+
+
     if stage == "WAIT_FOR_INIT":
         if cluster_api_available(oc_bin, kubeconfig_path):
             LOG.info('[CREATE] Cluster API is available. Time Elapsed: %s', _readable_time_delta(time_elapsed))
