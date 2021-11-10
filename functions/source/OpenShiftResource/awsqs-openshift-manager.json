@@ -88,12 +88,27 @@
                 "type": "string"
             }
         },
-        "Subnets": {
-            "description": "List of all subnets for the cluster. Add both public and private subnets",
+        "PrivateSubnets": {
+            "description": "List of private subnets for the cluster.",
             "type": "array",
             "items": {
                 "type": "string"
             }
+        },
+        "PublicSubnets": {
+            "description": "List of public subnets for the cluster. ",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "Internal": {
+            "description": "Is the cluster publishing only internal - yes/no",
+            "type": "string",
+            "enum": [
+                "yes",
+                "no"
+            ]
         },
         "CertificateArn": {
             "description": "An ARN to the ACM certificate for user Applications",

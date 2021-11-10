@@ -65,6 +65,7 @@ Metadata:
           - PullSecret
           - MasterInstanceProfileName
           - WorkerInstanceProfileName
+          - Internal
       - Label:
           default: AWS Quick Start Configuration
         Parameters:
@@ -150,6 +151,8 @@ Metadata:
         default: Cluster Ingress Certificate ARN
       EnableSSLCertificateGeneration:
         default: Enable SSL Certificate Generation?
+      Internal:
+        default: Internal Cluster
 Parameters:
   EnableSSLCertificateGeneration:
     Description: Activates automatic SSL Certificate generation through ACM. Uses DNS or Email depending on available options
@@ -461,6 +464,13 @@ Parameters:
     Default: "Required"
     Description: "Required: cluster name is required for OCP 4.x"
     Type: String
+  Internal:
+    Type: String
+    Description: Create the Cluster using internal publishing
+    AllowedValues:
+      - 'yes'
+      - 'no'
+    Default: 'no'
 Resources:
   #
   # Generates an S3 Bucket for OpenShift to back its container image registry
@@ -525,6 +535,7 @@ Resources:
         PublicSubnet3CIDR: !Ref 'PublicSubnet3CIDR'
         PublicSubnetTag3: "kubernetes.io/role/elb="
         VPCCIDR: !Ref 'VPCCIDR'
+        Internal: !Ref Internal
   #
   # SSL Certificate management
   #

@@ -18,8 +18,10 @@ MINIMUM_HEALTHY_OPERATORS = 25
 
 
 def generate_ignition_files(openshift_install_binary, download_path, cluster_name, ssh_key, pull_secret,
-                            hosted_zone_name, subnets, availability_zones, aws_access_key_id, aws_secret_access_key,
-                            worker_node_size=3, certificate_arn=None, worker_instance_profile=None, ami_id=None, machine_network=None):
+                            hosted_zone_name, private_subnets, public_subnets, availability_zones, aws_access_key_id,
+                            aws_secret_access_key,
+                            worker_node_size=3, certificate_arn=None, worker_instance_profile=None, ami_id=None,
+                            machine_network=None, internal=False):
     """
     Produces a set of Ignition files and K8S/OpenShift manifests that are used to orchestrate the majority of the
     OpenShift v4 installation process.
@@ -40,12 +42,14 @@ def generate_ignition_files(openshift_install_binary, download_path, cluster_nam
     :param ssh_key: A Public SSH key to load into the cluster for administrative access
     :param pull_secret: A valid RedHat Pull Secret JSON for fetching container images from RedHat's repository
     :param hosted_zone_name: DNS Zone name. The `cluster_name` is prepended to this to create a private DNS zone.
-    :param subnets: List of all subnets IDs -- both public and private are required.
+    :param public_subnets: List of subnets IDs -- public - ignored if private
+    :param private_subnets: List of subnets IDs -- private
     :param availability_zones: List of availability zones. Must be at least 3 or greater.
     :param aws_access_key_id: A valid AWS Access Key ID for the Cluster to use for managing the AWS platform
     :param aws_secret_access_key: A valid AWS Secret Access Key for the Cluster to use for managing the AWS platform
     :param worker_instance_profile: [Optional] A IAM Instance Profile to attach to Worker instances
     :param machine_network: [Optional] The machine network cidr to use.
+    :param internal: [Optional] The cluster is set to internal.
 
     :return Tuple(InfraName: str, KubeAdminPass: str, KubeConfig: str, AssetsDir: str):
     """
@@ -54,7 +58,7 @@ def generate_ignition_files(openshift_install_binary, download_path, cluster_nam
     log.debug('SSHKey: %s', ssh_key)
     log.debug('PullSecret is %s set', "" if pull_secret else "not")
     log.debug('HostedZoneName: %s', hosted_zone_name)
-    log.debug('Subnets: %s', subnets)
+    log.debug('Subnets: private: %s / public %s', private_subnets, public_subnets)
     log.debug('Availability Zones: %s', availability_zones)
     log.debug('Cluster AWS Access Key: %s', aws_access_key_id)
     log.debug('Cluster AWS Secret Key is %s set', "" if aws_secret_access_key else "not")
@@ -76,20 +80,24 @@ def generate_ignition_files(openshift_install_binary, download_path, cluster_nam
     openshift_install_config['pullSecret'] = pull_secret
     openshift_install_config['baseDomain'] = hosted_zone_name
     openshift_install_config['credentialsMode'] = 'Mint'
-    openshift_install_config['platform']['aws']['subnets'] = subnets
+    if internal:
+        openshift_install_config['platform']['aws']['subnets'] = private_subnets
+        openshift_install_config['publish'] = "Internal"
+    else:
+        openshift_install_config['platform']['aws']['subnets'] = private_subnets.join(public_subnets)
     openshift_install_config['platform']['aws']['region'] = os.getenv('AWS_REGION')
     if ami_id is not None:
         openshift_install_config['platform']['aws']['amiID'] = ami_id
-    #TODO openshift_install_config['controlPlane'][0]['platform']['aws']['type'] = 
+    # TODO openshift_install_config['controlPlane'][0]['platform']['aws']['type'] =
     openshift_install_config['controlPlane']['platform']['aws']['zones'] = availability_zones
     openshift_install_config['compute'][0]['platform']['aws']['zones'] = availability_zones
-    #TODO openshift_install_config['compute'][0]['platform']['aws']['type'] = 
-    #TODO make storage type configurable for compute & control + iops & size
+    # TODO openshift_install_config['compute'][0]['platform']['aws']['type'] =
+    # TODO make storage type configurable for compute & control + iops & size
     openshift_install_config['compute'][0]['platform']['aws']['rootVolume']['type'] = 'gp3'
     openshift_install_config['compute'][0]['replicas'] = worker_node_size
     if machine_network is not None:
         openshift_install_config['networking']['machineNetwork'][0]['cidr'] = machine_network
-    #TODO remove full dump
+    # TODO remove full dump
     log.debug('full config file:')
     log.debug(yaml.dump(openshift_install_config))
     cluster_install_config_file = os.path.join(assets_directory, 'install-config.yaml')
@@ -267,7 +275,8 @@ def bootstrap_post_process(oc, kubeconfig_path, remove_builtin_ingress=False, do
         run_process(f'{oc} --config {kubeconfig_path} replace --force --wait -f {ingress_yaml_path}')
     except subprocess.CalledProcessError as e:
         if 'AlreadyExists' in e.stderr:
-            LOG.info('Caught Exception: Command exited with nonzero because resource already exists. Continuing as normal.')
+            LOG.info(
+                'Caught Exception: Command exited with nonzero because resource already exists. Continuing as normal.')
         else:
             raise
     LOG.info('Finished Post-Process steps')
@@ -374,7 +383,6 @@ platform:
   aws:
     region: updateme
     subnets: []
-publish: Internal
 
 pullSecret: "{ 'UpdateMe': true }"
 sshKey: |

@@ -55,7 +55,9 @@ class ResourceModel(BaseModel):
     WorkerInstanceProfileName: Optional[str]
     HostedZoneName: Optional[str]
     AvailabilityZones: Optional[Sequence[str]]
-    Subnets: Optional[Sequence[str]]
+    PrivateSubnets: Optional[Sequence[str]]
+    PublicSubnets: Optional[Sequence[str]]
+    Internal: Optional[str]
     CertificateArn: Optional[str]
     ClusterIngressCertificateArn: Optional[str]
     ClusterIngressPrivateKeySecretName: Optional[str]
@@ -93,7 +95,9 @@ class ResourceModel(BaseModel):
             WorkerInstanceProfileName=json_data.get("WorkerInstanceProfileName"),
             HostedZoneName=json_data.get("HostedZoneName"),
             AvailabilityZones=json_data.get("AvailabilityZones"),
-            Subnets=json_data.get("Subnets"),
+            PrivateSubnets=json_data.get("PrivateSubnets"),
+            PublicSubnets=json_data.get("PublicSubnets"),
+            Internal=json_data.get("Internal"),
             CertificateArn=json_data.get("CertificateArn"),
             ClusterIngressCertificateArn=json_data.get("ClusterIngressCertificateArn"),
             ClusterIngressPrivateKeySecretName=json_data.get("ClusterIngressPrivateKeySecretName"),

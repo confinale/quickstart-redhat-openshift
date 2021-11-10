@@ -18,6 +18,8 @@ Metadata:
           - PrivateSubnet2ID
           - PrivateSubnet3ID
           - PublicSubnet1ID
+          - PublicSubnet2ID
+          - PublicSubnet3ID
           - SSLCertificateId
           - ClusterIngressPrivateKeySecretName
           - ClusterIngressCertificateArn
@@ -25,6 +27,7 @@ Metadata:
           - RemoteAccessCIDR
           - HostedZoneID
           - HostedZoneName
+          - Internal
       - Label:
           default: Amazon EC2 Configuration
         Parameters:
@@ -101,12 +104,18 @@ Metadata:
         default: Private Subnet 1 ID
       PublicSubnet1ID:
         default: Public Subnet 1 ID
+      PublicSubnet2ID:
+        default: Public Subnet 2 ID
+      PublicSubnet3ID:
+        default: Public Subnet 3 ID
       ClusterIngressPrivateKeySecretName:
         default: Cluster Ingress Private Key Secret Name
       ClusterIngressCertificateArn:
         default: Cluster Ingress Certificate ARN
       HostedZoneID:
         default: Route 53 Hosted Zone ID
+      Internal:
+        default: Is the Cluster internal
 Parameters:
   MasterInstanceProfileName:
     Description: (Optional) Provide an IAM Instance profile name to use for control plane nodes
@@ -139,6 +148,14 @@ Parameters:
   PublicSubnet1ID:
     Description: ID of private subnet 1 in Availability Zone 1 for the Workload (e.g.,
       subnet-a0246dcd)
+    Type: String
+  PublicSubnet2ID:
+    Description: ID of private subnet 2 in Availability Zone 2 for the Workload (e.g.,
+      subnet-b1f432cd)
+    Type: String
+  PublicSubnet3ID:
+    Description: ID of private subnet 3 in Availability Zone 3 for the Workload (e.g.,
+      subnet-b1f4a2cd)
     Type: String
   NumberOfNodes:
     Default: '3'
@@ -201,6 +218,13 @@ Parameters:
       - 'yes'
       - 'no'
     Default: 'yes'
+  Internal:
+    Type: String
+    Description: Create the Cluster in internal mode
+    AllowedValues:
+      - 'yes'
+      - 'no'
+    Default: 'no'
   MasterInstanceType:
     Default: m5.xlarge
     AllowedValues:
@@ -455,10 +479,15 @@ Resources:
       AvailabilityZones: !Split
         - ","
         - !Ref AvailabilityZones
-      Subnets:
+      PublicSubnets:
+        - !Ref PublicSubnet1ID
+        - !Ref PublicSubnet2ID
+        - !Ref PublicSubnet3ID
+      PrivateSubnets:
         - !Ref PrivateSubnet1ID
         - !Ref PrivateSubnet2ID
         - !Ref PrivateSubnet3ID
+      Internal: !Ref Internal
       AwsAccessKeyId: !Ref OpenShift4ClusterManagerAccessKeys
       AwsSecretAccessKey: !GetAtt OpenShift4ClusterManagerAccessKeys.SecretAccessKey
       WorkerInstanceProfileName: !Ref WorkerInstanceProfileName
@@ -509,6 +538,10 @@ Resources:
         HostedZoneName: !Ref HostedZoneName
         HostedZoneID: !Ref HostedZoneID
         ACMCertificateId: !Ref SSLCertificateId
+        Internal: !Ref Internal
+        PublicSubnets: !Join
+          - ","
+          - [!Ref PublicSubnet1ID, !Ref PublicSubnet2ID, !Ref PublicSubnet3ID]
         PrivateSubnets: !Join
           - ","
           - [!Ref PrivateSubnet1ID, !Ref PrivateSubnet2ID, !Ref PrivateSubnet3ID]

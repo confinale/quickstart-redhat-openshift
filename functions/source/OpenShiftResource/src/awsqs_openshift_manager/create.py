@@ -44,13 +44,14 @@ def generate_ignition_create(model: Optional[ResourceModel], session: Optional[S
     model.InfrastructureName, model.KubeAdminPassword, kubeconfig, local_folder = generate_ignition_files(
         openshift_install_binary, download_path,
         model.ClusterName, model.SSHKey, model.PullSecret,
-        model.HostedZoneName, model.Subnets, model.AvailabilityZones,
+        model.HostedZoneName, model.PrivateSubnets, model.PublicSubnets, model.AvailabilityZones,
         model.AwsAccessKeyId, model.AwsSecretAccessKey,
         certificate_arn=model.CertificateArn,
         worker_instance_profile=model.WorkerInstanceProfileName,
         worker_node_size=model.WorkerNodeSize,
         ami_id=model.AmiId,
-        machine_network=model.MachineNetwork
+        machine_network=model.MachineNetwork,
+        internal=model.Internal == 'yes'
     )
     model.InfrastructureId = model.InfrastructureName
     upload_ignition_files_to_s3(local_folder, model.IgnitionBucket, session)
@@ -143,26 +144,25 @@ def bootstrap_create(model: ResourceModel, stage: str, start_time: float, sessio
     else:
         oc_bin = f'{Path(__file__).parent.absolute()}/{openshift_client_binary}'
         kubeconfig_path = write_kubeconfig(session, model.KubeConfig)
-        #fetch_openshift_binary(openshift_client_mirror_url, openshift_client_package, openshift_client_binary, '/tmp/')
+        # fetch_openshift_binary(openshift_client_mirror_url, openshift_client_package, openshift_client_binary, '/tmp/')
 
-
-    # ignore just wait a bit - you'll need to manually terminate the bootstrap instance..
-    if stage == "WAIT_FOR_INIT":
+    if model.Internal == 'yes':
+        # ignore just wait a bit - you'll need to manually terminate the bootstrap instance..
+        if stage == "WAIT_FOR_INIT":
             delay = 300
             next_stage = 'WAIT_FOR_CLUSTER_OPERATORS'
             return {**default_response, **{
                 "callbackContext": {"stage": next_stage, "start_time": start_time},
                 "callbackDelaySeconds": delay
             }}
-    elif stage == "WAIT_FOR_CLUSTER_OPERATORS":
-        return {
-            "status": OperationStatus.SUCCESS,
-            "resourceModel": model,
-            "message": "Cluster successfully bootstrapped and ready for operations",
-        }
+        elif stage == "WAIT_FOR_CLUSTER_OPERATORS":
+            return {
+                "status": OperationStatus.SUCCESS,
+                "resourceModel": model,
+                "message": "Cluster successfully bootstrapped and ready for operations",
+            }
 
-    raise AttributeError("Unknown Stage: %s", stage)
-
+        raise AttributeError("Unknown Stage: %s", stage)
 
     if stage == "WAIT_FOR_INIT":
         if cluster_api_available(oc_bin, kubeconfig_path):
