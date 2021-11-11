@@ -508,34 +508,6 @@ Resources:
         DomainName: !Ref DomainName
         SubDomainPrefix: !Ref SubDomainPrefix
   #
-  # Creates the VPC Network for the cluster
-  #
-  VPCStack:
-    Metadata:
-      cfn-lint:
-        config:
-          ignore_checks:
-            - E9902
-          ignore_reasons:
-            E9902: Parameter name is same
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/common/aws-vpc.template.yaml'
-        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-      Parameters:
-        AvailabilityZones: !Join [ ',', !Ref 'AvailabilityZones' ]
-        NumberOfAZs: '3'
-        PrivateSubnet1ACIDR: !Ref 'PrivateSubnet1CIDR'
-        PrivateSubnet2ACIDR: !Ref 'PrivateSubnet2CIDR'
-        PrivateSubnet3ACIDR: !Ref 'PrivateSubnet3CIDR'
-        PublicSubnet1CIDR: !Ref 'PublicSubnet1CIDR'
-        PublicSubnet2CIDR: !Ref 'PublicSubnet2CIDR'
-        PublicSubnet3CIDR: !Ref 'PublicSubnet3CIDR'
-        PublicSubnetTag3: "kubernetes.io/role/elb="
-        VPCCIDR: !Ref 'VPCCIDR'
-  #
   # SSL Certificate management
   #
   # Either created through ACM or bring your own ARN
