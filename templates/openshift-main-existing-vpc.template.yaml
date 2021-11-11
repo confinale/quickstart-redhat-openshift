@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: '(qs-1nltbq5f8) OpenShift, License: Apache 2.0 (Please do not remove)
   April, 6, 2018
-  Deploys an OpenShift cluster into a new VPC'
+  Deploys an OpenShift cluster into an existing VPC'
 Metadata:
   cfn-lint:
     config:
@@ -535,7 +535,6 @@ Resources:
         PublicSubnet3CIDR: !Ref 'PublicSubnet3CIDR'
         PublicSubnetTag3: "kubernetes.io/role/elb="
         VPCCIDR: !Ref 'VPCCIDR'
-        Internal: !Ref Internal
   #
   # SSL Certificate management
   #
@@ -665,6 +664,7 @@ Resources:
         AvailabilityZones: !Join
           - ","
           - !Ref AvailabilityZones
+        Internal: !Ref Internal
 Conditions:
   EmptyPullSecret: !Equals
     - !Ref PullSecret
