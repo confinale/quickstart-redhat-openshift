@@ -803,9 +803,9 @@ Conditions:
     - !Equals
       - !Ref HostedZoneID
       - ""
-  IsInternal: -!Equals
+  IsInternal: !Equals
     - !Ref Internal
-    - "Yes"
+    - "yes"
 Outputs:
   PrivateHostedZoneId:
     Description: Hosted zone ID for the private DNS, which is required for private records.
