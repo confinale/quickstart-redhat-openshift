@@ -84,7 +84,7 @@ def generate_ignition_files(openshift_install_binary, download_path, cluster_nam
         openshift_install_config['platform']['aws']['subnets'] = private_subnets
         openshift_install_config['publish'] = "Internal"
     else:
-        openshift_install_config['platform']['aws']['subnets'] = private_subnets.join(public_subnets)
+        openshift_install_config['platform']['aws']['subnets'] = private_subnets.extend(public_subnets)
     openshift_install_config['platform']['aws']['region'] = os.getenv('AWS_REGION')
     if ami_id is not None:
         openshift_install_config['platform']['aws']['amiID'] = ami_id
