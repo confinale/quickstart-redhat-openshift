@@ -132,9 +132,7 @@ Resources:
 
 
   ExtPassthroughElb:
-    Condition: !And
-      - HasACMCertificate
-      - !Not IsInternal
+    Condition: HasExternalElb
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Name: !Join ["-", [!Ref InfrastructureName, "pass"]]
@@ -153,7 +151,7 @@ Resources:
       Type: network
 
   ExtApiElb:
-    Condition: !Not IsInternal
+    Condition: IsNotInternal
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Name: !Join ["-", [!Ref InfrastructureName, "ext"]]
@@ -806,6 +804,8 @@ Conditions:
   IsInternal: !Equals
     - !Ref Internal
     - "yes"
+  IsNotInternal: !Not [!Equals [!Ref Internal, "yes"]]
+  HasExternalElb: !And [ !Not [!Equals [ !Ref ACMCertificateId,""]], !Not [!Equals [!Ref Internal, "yes"]]]
 Outputs:
   PrivateHostedZoneId:
     Description: Hosted zone ID for the private DNS, which is required for private records.
