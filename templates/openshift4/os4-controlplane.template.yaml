@@ -193,6 +193,7 @@ Resources:
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs:
+            Encrypted: true
             VolumeSize: 120
             VolumeType: "gp3"
       IamInstanceProfile: !Ref MasterInstanceProfileName
@@ -252,6 +253,7 @@ Resources:
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs:
+            Encrypted: true
             VolumeSize: 120
             VolumeType: "gp3"
       IamInstanceProfile: !Ref MasterInstanceProfileName
@@ -311,6 +313,7 @@ Resources:
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs:
+            Encrypted: true
             VolumeSize: 120
             VolumeType: "gp3"
       IamInstanceProfile: !Ref MasterInstanceProfileName

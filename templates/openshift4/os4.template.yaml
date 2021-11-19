@@ -373,6 +373,12 @@ Resources:
   #
   IgnitionBucket:
     Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: aws:kms
+            BucketKeyEnabled: true
   #
   # OpenShift4 requires valid AWS Access Keys at installation time.
   #

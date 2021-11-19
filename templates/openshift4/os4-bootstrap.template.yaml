@@ -186,6 +186,12 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: !Ref RhcosAmi
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            Encrypted: true
+            VolumeSize: 16
+            VolumeType: "gp3"
       IamInstanceProfile: !Ref BootstrapInstanceProfile
       InstanceType: "i3.large"
       Tags:

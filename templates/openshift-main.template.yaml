@@ -424,6 +424,12 @@ Resources:
   #
   RegistryBucket:
     Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: aws:kms
+            BucketKeyEnabled: true
   #
   # This will clean up the contents of the Image Registry Bucket so CloudFormation can delete it
   #
