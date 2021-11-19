@@ -518,6 +518,7 @@ Resources:
       CertificateArn: !Ref SSLCertificateId
       ClusterIngressCertificateArn: !Ref ClusterIngressCertificateArn
       ClusterIngressPrivateKeySecretName: !Ref ClusterIngressPrivateKeySecretName
+      Internal: !Ref Internal
   #
   # Sets up Networking
   # - Load Balancers for EXTernal and INTernal API endpoints
