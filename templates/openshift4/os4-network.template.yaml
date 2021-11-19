@@ -151,12 +151,11 @@ Resources:
       Type: network
 
   ExtApiElb:
-    Condition: IsNotInternal
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Name: !Join ["-", [!Ref InfrastructureName, "ext"]]
       IpAddressType: ipv4
-      Subnets: !Ref PublicSubnets
+      Subnets: !If [IsInternal, !Ref PrivateSubnets, !Ref PublicSubnets]
       Type: network
 
   IntApiElb:
