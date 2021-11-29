@@ -711,3 +711,9 @@ Outputs:
   OpenShiftUI:
     Description: The URL OpenShiftUI
     Value: !GetAtt OpenShift4.Outputs.OpenShiftUI
+  KubeAdminPassword:
+    Value: !GetAtt OpenShift4.Outputs.KubeAdminPassword
+    Description: Location in AWS Secrets Manager for the Open Shift Admin password
+  KubeConfig:
+    Value: !GetAtt OpenShift4.Outputs.KubeConfig
+    Description: Location in AWS Secrets Manager for the Open Shift kubeadmin file
