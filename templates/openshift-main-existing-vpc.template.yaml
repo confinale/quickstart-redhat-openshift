@@ -714,6 +714,10 @@ Outputs:
   KubeAdminPassword:
     Value: !GetAtt OpenShift4.Outputs.KubeAdminPassword
     Description: Location in AWS Secrets Manager for the Open Shift Admin password
+    Export:
+      Name: !Sub '${AWS::StackName}-KubeAdminPassword'
   KubeConfig:
     Value: !GetAtt OpenShift4.Outputs.KubeConfig
     Description: Location in AWS Secrets Manager for the Open Shift kubeadmin file
+    Export:
+      Name: !Sub '${AWS::StackName}-KubeConfig'
