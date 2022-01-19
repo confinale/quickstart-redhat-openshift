@@ -77,6 +77,10 @@
             "description": "The DNS zone for this cluster",
             "type": "string"
         },
+        "MachineNetwork": {
+            "description": "The Machine Network CIDR for this cluster",
+            "type": "string"
+        },
         "AvailabilityZones": {
             "description": "List of all availability zones. Must pick at least 3",
             "type": "array",

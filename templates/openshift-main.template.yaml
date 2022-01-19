@@ -673,3 +673,4 @@ Outputs:
   OpenShiftUI:
     Description: The URL OpenShiftUI
     Value: !GetAtt OpenShift4.Outputs.OpenShiftUI
+

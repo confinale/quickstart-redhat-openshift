@@ -19,7 +19,7 @@ MINIMUM_HEALTHY_OPERATORS = 25
 
 def generate_ignition_files(openshift_install_binary, download_path, cluster_name, ssh_key, pull_secret,
                             hosted_zone_name, subnets, availability_zones, aws_access_key_id, aws_secret_access_key,
-                            worker_node_size=3, certificate_arn=None, worker_instance_profile=None, ami_id=None):
+                            worker_node_size=3, certificate_arn=None, worker_instance_profile=None, ami_id=None, machine_network=None):
     """
     Produces a set of Ignition files and K8S/OpenShift manifests that are used to orchestrate the majority of the
     OpenShift v4 installation process.
@@ -45,6 +45,7 @@ def generate_ignition_files(openshift_install_binary, download_path, cluster_nam
     :param aws_access_key_id: A valid AWS Access Key ID for the Cluster to use for managing the AWS platform
     :param aws_secret_access_key: A valid AWS Secret Access Key for the Cluster to use for managing the AWS platform
     :param worker_instance_profile: [Optional] A IAM Instance Profile to attach to Worker instances
+    :param machine_network: [Optional] The machine network cidr to use.
 
     :return Tuple(InfraName: str, KubeAdminPass: str, KubeConfig: str, AssetsDir: str):
     """
@@ -58,6 +59,7 @@ def generate_ignition_files(openshift_install_binary, download_path, cluster_nam
     log.debug('Cluster AWS Access Key: %s', aws_access_key_id)
     log.debug('Cluster AWS Secret Key is %s set', "" if aws_secret_access_key else "not")
     log.debug('Worker Instance Profile: %s', worker_instance_profile)
+    log.debug('Machine Network: %s', machine_network)
 
     if not os.path.exists(assets_directory):
         os.mkdir(assets_directory)
@@ -78,11 +80,15 @@ def generate_ignition_files(openshift_install_binary, download_path, cluster_nam
     openshift_install_config['platform']['aws']['region'] = os.getenv('AWS_REGION')
     if ami_id is not None:
         openshift_install_config['platform']['aws']['amiID'] = ami_id
+    #TODO openshift_install_config['controlPlane'][0]['platform']['aws']['type'] =
     openshift_install_config['controlPlane']['platform']['aws']['zones'] = availability_zones
     openshift_install_config['compute'][0]['platform']['aws']['zones'] = availability_zones
+    #TODO openshift_install_config['compute'][0]['platform']['aws']['type'] =
+    #TODO make storage type configurable  iops: 2000 size: 500
     openshift_install_config['compute'][0]['platform']['aws']['rootVolume']['type'] = 'gp3'
     openshift_install_config['compute'][0]['replicas'] = worker_node_size
-
+    if machine_network is not None:
+        openshift_install_config['networking']['machineNetwork'][0]['cidr'] = machine_network
     cluster_install_config_file = os.path.join(assets_directory, 'install-config.yaml')
     yaml.dump(openshift_install_config,
               open(cluster_install_config_file, 'w'),

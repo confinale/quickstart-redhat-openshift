@@ -65,6 +65,7 @@ class ResourceModel(BaseModel):
     KubeConfig: Optional[str]
     KubeConfigArn: Optional[str]
     KubeAdminPasswordArn: Optional[str]
+    MachineNetwork: Optional[str]
 
     @classmethod
     def _deserialize(
@@ -102,6 +103,7 @@ class ResourceModel(BaseModel):
             KubeConfig=json_data.get("KubeConfig"),
             KubeConfigArn=json_data.get("KubeConfigArn"),
             KubeAdminPasswordArn=json_data.get("KubeAdminPasswordArn"),
+            MachineNetwork=json_data.get("MachineNetwork")
         )
 
 
