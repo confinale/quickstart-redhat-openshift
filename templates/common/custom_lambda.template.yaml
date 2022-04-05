@@ -78,6 +78,10 @@ Parameters:
       can include numbers, lowercase letters, uppercase letters, hyphens (-), and
       forward slash (/).
     Type: String
+  SubnetId:
+    Default: ""
+    Description: Used for internal binding of the custom lamda to your private subnet. 
+    Type: String
 Resources:
   LambdaZipsBucket:
     Type: AWS::S3::Bucket
@@ -656,6 +660,11 @@ Resources:
                   ExecutionRoleArn="${OpenShiftCustomResourceExecutionRole.Arn}"
               )
               status, version_arn = stabilize(response['RegistrationToken'], cfn)
+              if status == cfnresponse.SUCCESS && '${SubnetId}'!='':
+                response2 = cfn.set_type_configuration(
+                  TypeArn=version_arn
+                  Configuration='{"SubnetId": "${SubnetId}"}'
+                )
               cfn.set_type_default_version(Arn=version_arn)
               return status, version_arn
 

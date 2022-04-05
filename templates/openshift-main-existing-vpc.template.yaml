@@ -207,16 +207,19 @@ Parameters:
       ID of private subnet 1 in Availability Zone 1 for the Workload (e.g.,
       subnet-a0246dcd)
     Type: String
+    Default: "-"
   PublicSubnet2ID:
     Description: >-
       ID of private subnet 2 in Availability Zone 2 for the Workload (e.g.,
       subnet-b1f432cd)
     Type: String
+    Default: "-"
   PublicSubnet3ID:
     Description: >-
       ID of private subnet 3 in Availability Zone 3 for the Workload (e.g.,
       subnet-b1f4a2cd)
     Type: String
+    Default: "-"
   PullSecret:
     Description: >-
       Required for OpenShift v4: The OCP Pull Secret JSON
@@ -562,6 +565,7 @@ Resources:
         RegistryBucket: !Ref RegistryBucket
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
+        SubnetId: !Ref PrivateSubnet1ID
   OpenShift4:
     Type: AWS::CloudFormation::Stack
     DependsOn: CustomLambdaStack
@@ -707,6 +711,19 @@ Mappings:
       OpenShiftVersionNum: "4.6.49"
       OpenShiftInstallBinary: "openshift-install"
       OpenShiftClientBinary: "openshift-client"
+Rules:
+  PublicSubnets:
+    RuleCondition: !Equals [!Ref Internal, 'no']
+    Assertions:
+          - PublicSubnet1ID
+          - PublicSubnet2ID
+          - PublicSubnet3ID
+      - Assert: !Not 
+          - !Or
+            - !Equals [!Ref PublicSubnet1ID, '-']
+            - !Equals [!Ref PublicSubnet2ID, '-']
+            - !Equals [!Ref PublicSubnet3ID, '-']
+        AssertDescription: To deploy a public cluster you have to specify PublicSubnets
 Outputs:
   OpenShiftUI:
     Description: The URL OpenShiftUI

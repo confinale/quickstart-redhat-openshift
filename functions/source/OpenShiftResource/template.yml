@@ -5,6 +5,11 @@ Description: AWS SAM template for the AWSQS::OpenShift::Manager resource type
 Globals:
   Function:
     Timeout: 60  # docker start-up times can be long for SAM CLI
+Parameter:
+  SubnetId:
+    Description: "Subnet ID to execute functions in"
+    Type: string
+    Default: ""
 
 Resources:
   TypeFunction:
@@ -13,6 +18,11 @@ Resources:
       Handler: awsqs_openshift_manager.handlers.resource
       Runtime: python3.7
       CodeUri: build/
+      VpcConfig:
+        !If
+          - !Not [ !Equals ["SubnetId": ""] ]
+          - SubnetIds:
+              -  !Ref SubnetId
 
   TestEntrypoint:
     Type: AWS::Serverless::Function
