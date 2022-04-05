@@ -662,7 +662,7 @@ Resources:
               status, version_arn = stabilize(response['RegistrationToken'], cfn)
               if status == cfnresponse.SUCCESS and '${SubnetId}'!='':
                 response2 = cfn.set_type_configuration(
-                  TypeArn=version_arn
+                  TypeArn=version_arn,
                   Configuration='{"SubnetId": "${SubnetId}"}'
                 )
               cfn.set_type_default_version(Arn=version_arn)
