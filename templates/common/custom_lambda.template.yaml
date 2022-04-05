@@ -648,8 +648,8 @@ Resources:
                   p = cfn.describe_type_registration(RegistrationToken=token)
               if p['ProgressStatus'] == 'FAILED':
                   logging.error(p)
-                  return cfnresponse.FAILED, p['TypeVersionArn']
-              return cfnresponse.SUCCESS, p['TypeVersionArn']
+                  return cfnresponse.FAILED, p['TypeVersionArn'], p['TypeArn']
+              return cfnresponse.SUCCESS, p['TypeVersionArn'], p['TypeArn']
 
           def register(cfn):
               response = cfn.register_type(
@@ -659,10 +659,10 @@ Resources:
                   LoggingConfig={"LogRoleArn": "${OpenShiftCustomResourceLogDeliveryRole.Arn}", "LogGroupName": "awsqs-openshift-manager-logs"},
                   ExecutionRoleArn="${OpenShiftCustomResourceExecutionRole.Arn}"
               )
-              status, version_arn = stabilize(response['RegistrationToken'], cfn)
+              status, version_arn, type_arn = stabilize(response['RegistrationToken'], cfn)
               if status == cfnresponse.SUCCESS and '${SubnetId}'!='':
                 response2 = cfn.set_type_configuration(
-                  TypeArn=version_arn,
+                  TypeArn=type_arn,
                   Configuration='{"SubnetId": "${SubnetId}"}'
                 )
               cfn.set_type_default_version(Arn=version_arn)
