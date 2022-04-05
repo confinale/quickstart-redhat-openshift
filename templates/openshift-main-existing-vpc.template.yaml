@@ -715,9 +715,6 @@ Rules:
   PublicSubnets:
     RuleCondition: !Equals [!Ref Internal, 'no']
     Assertions:
-          - PublicSubnet1ID
-          - PublicSubnet2ID
-          - PublicSubnet3ID
       - Assert: !Not 
           - !Or
             - !Equals [!Ref PublicSubnet1ID, '-']
