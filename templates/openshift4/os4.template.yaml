@@ -485,7 +485,6 @@ Resources:
       AvailabilityZones: !Split
         - ","
         - !Ref AvailabilityZones
-      
       !If
       - !Equals [!Ref Internal, "no"]
       - 
