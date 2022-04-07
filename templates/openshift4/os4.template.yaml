@@ -485,10 +485,15 @@ Resources:
       AvailabilityZones: !Split
         - ","
         - !Ref AvailabilityZones
-      PublicSubnets:
-        - !Ref PublicSubnet1ID
-        - !Ref PublicSubnet2ID
-        - !Ref PublicSubnet3ID
+      
+      !If
+      - !Equals [!Ref Internal, "no"]
+      - 
+        PublicSubnets:
+          - !Ref PublicSubnet1ID
+          - !Ref PublicSubnet2ID
+          - !Ref PublicSubnet3ID
+      - !Ref "AWS::NoValue"
       PrivateSubnets:
         - !Ref PrivateSubnet1ID
         - !Ref PrivateSubnet2ID
