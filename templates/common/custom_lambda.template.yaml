@@ -655,7 +655,7 @@ Resources:
               response = cfn.register_type(
                   Type='RESOURCE',
                   TypeName='AWSQS::OpenShift::Manager',
-                  Schema  HandlerPackage="s3://${LambdaZipsBucket}/${QSS3KeyPrefix}functions/packages/OpenShiftResource/awsqs-openshift-manager.zip",
+                  SchemaHandlerPackage="s3://${LambdaZipsBucket}/${QSS3KeyPrefix}functions/packages/OpenShiftResource/awsqs-openshift-manager.zip",
                   LoggingConfig={"LogRoleArn": "${OpenShiftCustomResourceLogDeliveryRole.Arn}", "LogGroupName": "awsqs-openshift-manager-logs"},
                   ExecutionRoleArn="${OpenShiftCustomResourceExecutionRole.Arn}"
               )
