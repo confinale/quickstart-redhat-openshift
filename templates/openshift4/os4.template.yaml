@@ -489,15 +489,15 @@ Resources:
         - !If
           - UseNonInternalNetworks
           - !Ref PublicSubnet1ID
-          - !Ref "AWS::NoValue"
+          - !Ref PrivateSubnet1ID
         - !If
           - UseNonInternalNetworks
           - !Ref PublicSubnet2ID
-          - !Ref "AWS::NoValue"
+          - !Ref PrivateSubnet2ID
         - !If
           - UseNonInternalNetworks
           - !Ref PublicSubnet3ID
-          - !Ref "AWS::NoValue"
+          - !Ref PrivateSubnet3ID
       PrivateSubnets:
         - !Ref PrivateSubnet1ID
         - !Ref PrivateSubnet2ID
