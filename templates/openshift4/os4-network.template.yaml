@@ -154,6 +154,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Name: !Join ["-", [!Ref InfrastructureName, "ext"]]
+      Scheme: !If [IsInternal, "internal", "internet-facing"]
       IpAddressType: ipv4
       Subnets: !If [IsInternal, !Ref PrivateSubnets, !Ref PublicSubnets]
       Type: network
