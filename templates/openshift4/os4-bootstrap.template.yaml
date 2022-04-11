@@ -242,9 +242,6 @@ Outputs:
   BootstrapInstanceId:
     Description: Bootstrap Instance ID.
     Value: !Ref BootstrapInstance
-  BootstrapPublicIp:
-    Description: The bootstrap node public IP address.
-    Value: !GetAtt BootstrapInstance.PublicIp
   BootstrapPrivateIp:
     Description: The bootstrap node private IP address.
     Value: !GetAtt BootstrapInstance.PrivateIp
