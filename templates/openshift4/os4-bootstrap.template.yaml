@@ -18,8 +18,8 @@ Parameters:
     Default: 0.0.0.0/0
     Description: CIDR block to allow SSH access to the bootstrap node.
     Type: String
-  PublicSubnet:
-    Description: The public subnet to launch the bootstrap node into.
+  Subnet:
+    Description: The subnet to launch the bootstrap node into.
     Type: AWS::EC2::Subnet::Id
   MasterSecurityGroupId:
     Description: The master security group ID for registering temporary rules.
@@ -84,7 +84,7 @@ Metadata:
         Parameters:
           - VpcId
           - AllowedBootstrapSshCidr
-          - PublicSubnet
+          - Subnet
       - Label:
           default: "Load Balancer Automation"
         Parameters:
@@ -100,8 +100,8 @@ Metadata:
         default: "VPC ID"
       AllowedBootstrapSshCidr:
         default: "Allowed SSH Source"
-      PublicSubnet:
-        default: "Public Subnet"
+      Subnet:
+        default: "Subnet"
       RhcosAmi:
         default: "Red Hat Enterprise Linux CoreOS AMI ID"
       BootstrapIgnitionLocation:
@@ -200,12 +200,11 @@ Resources:
         - Key: cluster-role
           Value: bootstrap
       NetworkInterfaces:
-        - AssociatePublicIpAddress: true
-          DeviceIndex: "0"
+        - DeviceIndex: "0"
           GroupSet:
             - !Ref "BootstrapSecurityGroup"
             - !Ref "MasterSecurityGroupId"
-          SubnetId: !Ref "PublicSubnet"
+          SubnetId: !Ref "Subnet"
       UserData: !If
         - Version46OrGreater
         - Fn::Base64: !Sub
