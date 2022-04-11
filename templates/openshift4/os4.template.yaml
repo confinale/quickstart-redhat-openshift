@@ -485,13 +485,19 @@ Resources:
       AvailabilityZones: !Split
         - ","
         - !Ref AvailabilityZones
-#      !If
-#        - UseNonInternalNetworks
-#        - PublicSubnets:
-#            - !Ref PublicSubnet1ID
-#            - !Ref PublicSubnet2ID
-#            - !Ref PublicSubnet3ID
-#        - !Ref "AWS::NoValue"
+      PublicSubnets:
+        - !If
+          - UseNonInternalNetworks
+          - !Ref PublicSubnet1ID
+          - !Ref "AWS::NoValue"
+        - !If
+          - UseNonInternalNetworks
+          - !Ref PublicSubnet2ID
+          - !Ref "AWS::NoValue"
+        - !If
+          - UseNonInternalNetworks
+          - !Ref PublicSubnet3ID
+          - !Ref "AWS::NoValue"
       PrivateSubnets:
         - !Ref PrivateSubnet1ID
         - !Ref PrivateSubnet2ID
