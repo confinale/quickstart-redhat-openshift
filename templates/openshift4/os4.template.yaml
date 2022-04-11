@@ -487,15 +487,15 @@ Resources:
         - !Ref AvailabilityZones
       PublicSubnets:
         - !If
-          - UseNonInternalNetworks
+          - UsePublicNetworks
           - !Ref PublicSubnet1ID
           - !Ref PrivateSubnet1ID
         - !If
-          - UseNonInternalNetworks
+          - UsePublicNetworks
           - !Ref PublicSubnet2ID
           - !Ref PrivateSubnet2ID
         - !If
-          - UseNonInternalNetworks
+          - UsePublicNetworks
           - !Ref PublicSubnet3ID
           - !Ref PrivateSubnet3ID
       PrivateSubnets:
@@ -715,7 +715,7 @@ Conditions:
       - !Ref EnableBootstrap
       - 'yes'
     UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
-    UseNonInternalNetworks: !Equals [!Ref Internal, "yes"]
+    UsePublicNetworks: !Equals [!Ref Internal, "no"]
 Mappings:
   NoDotVersion:
     '4.2':
