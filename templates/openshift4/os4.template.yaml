@@ -557,7 +557,19 @@ Resources:
         Internal: !Ref Internal
         PublicSubnets: !Join
           - ","
-          - [!Ref PublicSubnet1ID, !Ref PublicSubnet2ID, !Ref PublicSubnet3ID]
+          - 
+            - !If
+              - UsePublicNetworks
+              - !Ref PublicSubnet1ID
+              - !Ref PrivateSubnet1ID
+            - !If
+              - UsePublicNetworks
+              - !Ref PublicSubnet2ID
+              - !Ref PrivateSubnet2ID
+            - !If
+              - UsePublicNetworks
+              - !Ref PublicSubnet3ID
+              - !Ref PrivateSubnet3ID
         PrivateSubnets: !Join
           - ","
           - [!Ref PrivateSubnet1ID, !Ref PrivateSubnet2ID, !Ref PrivateSubnet3ID]
