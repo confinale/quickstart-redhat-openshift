@@ -291,74 +291,7 @@ Resources:
       Timeout: 300
       Code:
         S3Bucket: !Ref 'LambdaZipsBucket'
-        S3Key: !Sub '${QSS3KeyPrefix}functions/packages/UnSubscribe/lambda.zip'  #
-  # Generates an S3 Bucket for OpenShift to back its container image registry
-  #
-  RegistryBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: aws:kms
-            BucketKeyEnabled: true
-  #
-  # This will clean up the contents of the Image Registry Bucket so CloudFormation can delete it
-  #
-  DeleteRegistryBucketContents:
-    Type: Custom::DeleteBucketContents
-    Version: '1.0'
-    Properties:
-      ServiceToken: !GetAtt CustomLambdaStack.Outputs.DeleteBucketContentsLambdaArn
-      Bucket: !Ref 'RegistryBucket'
-  DeleteBucketContentsRole:
-    Metadata:
-      cfn-lint:
-        config:
-          ignore_checks:
-            - EIAMPolicyActionWildcard
-          ignore_reasons:
-            EIAMPolicyActionWildcard: S3 bucket will be manipulated
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
-      Path: /
-      Policies:
-        - PolicyName: deletebucketcontents
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - s3:*
-                Resource:
-                  - !Sub 'arn:${AWS::Partition}:s3:::${RegistryBucket}'
-                  - !Sub 'arn:${AWS::Partition}:s3:::${RegistryBucket}/*'
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource:
-                  - !Sub arn:${AWS::Partition}:logs:*:*:*
-  DeleteBucketContentsLambda:
-    DependsOn: CopyZips
-    Type: AWS::Lambda::Function
-    Properties:
-      Handler: lambda_function.lambda_handler
-      MemorySize: 128
-      Role: !GetAtt 'DeleteBucketContentsRole.Arn'
-      Runtime: python3.7
-      Timeout: 300
-      Code:
-        S3Bucket: !Ref 'LambdaZipsBucket'
-        S3Key: !Sub '${QSS3KeyPrefix}functions/packages/DeleteBucketContents/lambda.zip'
+        S3Key: !Sub '${QSS3KeyPrefix}functions/packages/UnSubscribe/lambda.zip' 
   CopyZipsRole:
     Type: AWS::IAM::Role
     Properties:
@@ -736,9 +669,6 @@ Outputs:
     Condition: SetupRoute53
     Description: "The ARN For the ACMCert custom resource"
     Value: !GetAtt ACMCertificateLambda.Arn
-  DeleteBucketContentsLambdaArn:
-    Description: "The ARN For the DeleteBucketContents custom resource"
-    Value: !GetAtt DeleteBucketContentsLambda.Arn
   LambdaZipsBucket:
     Description: "The S3 Bucket to store all custom Lambda functions"
     Value: !Ref LambdaZipsBucket
