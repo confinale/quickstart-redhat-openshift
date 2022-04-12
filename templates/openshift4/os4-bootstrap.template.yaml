@@ -193,7 +193,7 @@ Resources:
             VolumeSize: 16
             VolumeType: "gp3"
       IamInstanceProfile: !Ref BootstrapInstanceProfile
-      InstanceType: "i3.large"
+      InstanceType: "m5.large"
       Tags:
         - Key: !Sub 'kubernetes.io/cluster/${InfrastructureName}'
           Value: "owned"
@@ -217,6 +217,9 @@ Resources:
             - {
               S3Loc: !Ref BootstrapIgnitionLocation
             }
+      Tags:
+        - Key: Name
+          Value: "Bootstrap Node"
   RegisterBootstrapApiTarget:
     Condition: DoRegistration
     Type: Custom::NLBRegister

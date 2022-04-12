@@ -34,7 +34,7 @@ Parameters:
     Description: IAM profile to associate with master nodes.
     Type: String
   WorkerInstanceType:
-    Default: m4.xlarge
+    Default: m5.xlarge
     Type: String
     AllowedValues:
       - t3.xlarge
