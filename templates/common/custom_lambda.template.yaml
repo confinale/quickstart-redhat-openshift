@@ -18,13 +18,7 @@ Metadata:
         Parameters:
           - QSS3BucketName
           - QSS3KeyPrefix
-      - Label:
-          default: OpenShift Configuration
-        Parameters:
-          - RegistryBucket
     ParameterLabels:
-      RegistryBucket:
-        default: Registry Bucket
       QSS3BucketName:
         default: Quick Start S3 Bucket Name
       QSS3KeyPrefix:
@@ -56,9 +50,6 @@ Parameters:
     Type: String
     MaxLength: '32'
     Default: ""
-  RegistryBucket:
-    Description: 'The Name of the S3 Bucket for Image Container Registry'
-    Type: String
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: Quick Start bucket name can include numbers, lowercase
@@ -300,7 +291,26 @@ Resources:
       Timeout: 300
       Code:
         S3Bucket: !Ref 'LambdaZipsBucket'
-        S3Key: !Sub '${QSS3KeyPrefix}functions/packages/UnSubscribe/lambda.zip'
+        S3Key: !Sub '${QSS3KeyPrefix}functions/packages/UnSubscribe/lambda.zip'  #
+  # Generates an S3 Bucket for OpenShift to back its container image registry
+  #
+  RegistryBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: aws:kms
+            BucketKeyEnabled: true
+  #
+  # This will clean up the contents of the Image Registry Bucket so CloudFormation can delete it
+  #
+  DeleteRegistryBucketContents:
+    Type: Custom::DeleteBucketContents
+    Version: '1.0'
+    Properties:
+      ServiceToken: !GetAtt CustomLambdaStack.Outputs.DeleteBucketContentsLambdaArn
+      Bucket: !Ref 'RegistryBucket'
   DeleteBucketContentsRole:
     Metadata:
       cfn-lint:
