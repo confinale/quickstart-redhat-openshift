@@ -149,14 +149,17 @@ Parameters:
     Description: ID of private subnet 1 in Availability Zone 1 for the Workload (e.g.,
       subnet-a0246dcd)
     Type: String
+    Default: ""
   PublicSubnet2ID:
     Description: ID of private subnet 2 in Availability Zone 2 for the Workload (e.g.,
       subnet-b1f432cd)
     Type: String
+    Default: ""
   PublicSubnet3ID:
     Description: ID of private subnet 3 in Availability Zone 3 for the Workload (e.g.,
       subnet-b1f4a2cd)
     Type: String
+    Default: ""
   NumberOfNodes:
     Default: '3'
     Description: The desired capacity for the OpenShift node instances
