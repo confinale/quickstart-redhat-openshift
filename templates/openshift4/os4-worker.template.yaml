@@ -4,12 +4,13 @@ Description: Template for OpenShift Cluster Node Launch (EC2 worker instance)
 Parameters:
   OpenshiftContainerPlatformVersion:
     Description: OpenShift version to deploy
-    Default: '4.6'
+    Default: '4.8'
     Type: String
     AllowedValues:
       - '4.3'
       - '4.5'
       - '4.6'
+      - '4.8'
   InfrastructureName:
     AllowedPattern: ^([a-zA-Z][a-zA-Z0-9\-]{0,26})
     MaxLength: 27

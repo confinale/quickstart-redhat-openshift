@@ -52,12 +52,13 @@ Parameters:
     Type: String
   OpenshiftContainerPlatformVersion:
     Description: OpenShift version to deploy
-    Default: '4.6'
+    Default: '4.8'
     Type: String
     AllowedValues:
       - '4.3'
       - '4.5'
       - '4.6'
+      - '4.8'
 
 Metadata:
   cfn-lint:
