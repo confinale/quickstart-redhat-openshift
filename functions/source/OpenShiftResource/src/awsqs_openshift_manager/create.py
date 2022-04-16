@@ -77,7 +77,7 @@ def generate_ignition_create(model: Optional[ResourceModel], session: Optional[S
     LOG.info("[CREATE] Saving KubeConfig as Secret")
     secrets = session.client("secretsmanager")
     model.KubeConfigArn = secrets.create_secret(
-        Name=f'{model.ClusterName}-kubeconfig',
+        Name=f'{model.InfrastructureId}-kubeconfig',
         Description=f'Kubeconfig for cluster/{model.InfrastructureName}',
         SecretString=kubeconfig,
         Tags=[infra_tag]
@@ -85,7 +85,7 @@ def generate_ignition_create(model: Optional[ResourceModel], session: Optional[S
     LOG.debug("[CREATE] KubeConfig ARN: %s", model.KubeConfigArn)
     LOG.info("[CREATE] Saving Kubeadmin password as Secret")
     model.KubeAdminPasswordArn = secrets.create_secret(
-        Name=f'{model.ClusterName}-kubeadmin',
+        Name=f'{model.InfrastructureId}-kubeadmin',
         Description=f'Kube Admin Password for cluster{model.InfrastructureName}',
         SecretString=model.KubeAdminPassword,
         Tags=[infra_tag]
