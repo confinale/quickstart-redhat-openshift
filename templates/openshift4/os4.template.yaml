@@ -801,12 +801,18 @@ Outputs:
   OpenShiftUI:
     Description: The URL OpenShiftUI
     Value: !Sub "https://console-openshift-console.apps.${ClusterName}.${HostedZoneName}"
+    Export:
+      Name: !Sub '${AWS::StackName}-OpenShiftUI'
   KubeAdminPassword:
     Value: !GetAtt OpenShiftGenerateIgnition.KubeAdminPasswordArn
     Description: Location in AWS Secrets Manager for the Open Shift Admin password
+    Export:
+      Name: !Sub '${AWS::StackName}-KubeAdminPassword'
   KubeConfig:
     Value: !GetAtt OpenShiftGenerateIgnition.KubeConfigArn
     Description: Location in AWS Secrets Manager for the Open Shift kubeadmin file
+    Export:
+      Name: !Sub '${AWS::StackName}-KubeConfig'
   IgnitionBucket:
     Value: !Ref IgnitionBucket
     Description: ARN of the S3 Bucket that holds Ignition files
