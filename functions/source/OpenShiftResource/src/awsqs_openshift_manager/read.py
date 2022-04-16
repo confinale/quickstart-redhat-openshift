@@ -58,7 +58,7 @@ def fetch_kube_parameters(model, session):
         else:
             LOG.debug('Fetching KubeConfig')
             model.KubeConfigArn = model.KubeConfig = \
-                secrets.describe_secret(SecretId=f'{model.InfrastructureId}-kubeconfig')['ARN']
+                secrets.describe_secret(SecretId=f'{model.ClusterName}-kubeconfig')['ARN']
 
     except ssm.exceptions.ParameterNotFound:
         err_msg = f"ERROR - Parameter at /OpenShift/{model.ClusterName}/InfrastructureId not found"
