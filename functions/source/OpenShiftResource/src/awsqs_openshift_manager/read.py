@@ -78,7 +78,7 @@ def fetch_kube_parameters(model, session):
         }
     try:
         LOG.debug('Fetching KubeAdminPassword')
-        model.KubeAdminPasswordArn = secrets.describe_secret(SecretId=f'{model.InfrastructureId}-kubeadmin')['ARN']
+        model.KubeAdminPasswordArn = secrets.describe_secret(SecretId=f'{model.ClusterName}-kubeadmin')['ARN']
     except secrets.exceptions.ResourceNotFoundException as e:
         if model.Action == 'GENERATE_IGNITION':
             err_msg = f'ERROR - Required Secret values for Kubernetes admin password could not be found: {e}',
